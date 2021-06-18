@@ -4,7 +4,8 @@ const lash = require('lodash');
 const { GraphQLObjectType, 
         GraphQLString,
         GraphQLSchema,
-        GraphQLID
+        GraphQLID,
+        GraphQLInt
 } = graphql;
 
 var books = [
@@ -13,12 +14,27 @@ var books = [
     { name: 'Java Programming', genre: 'Programming', id: '3'}
 ];
 
+var authors = [
+    { name: 'Dennis Richie', age: 70, id:'1'},
+    { name: 'Sudeep Nagarkar', age: 45, id:'2'},
+    { name: 'James Gosling', age: 50, id:'3'}
+];
+
 const BookType = new GraphQLObjectType({
     name: 'Book',
     fields: () => ({
         id: { type:GraphQLID },
         name: { type:GraphQLString },
         genre: { type:GraphQLString } 
+    })
+});
+
+const AuthorType = new GraphQLObjectType({
+    name: 'Author',
+    fields: () => ({
+        id: { type:GraphQLID },
+        name: { type:GraphQLString },
+        age: { type:GraphQLInt }
     })
 });
 
@@ -36,6 +52,17 @@ const RootQuery = new GraphQLObjectType({
                 //code to get data from database/other sources
                 return lash.find(books, {id : args.id});
             }
+        },
+        author: {
+            type: AuthorType,
+            args: {
+                id: {
+                    type: GraphQLID
+                }
+            },
+            resolve(parent,args){
+                return lash.find(authors, {id: args.id});
+            }         
         }
     }
 });
