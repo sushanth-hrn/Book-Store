@@ -1,6 +1,9 @@
 const graphql = require('graphql');
 const lash = require('lodash');
 
+const Book = require('../models/books');
+const Author = require('../models/authors');
+
 const { GraphQLObjectType, 
         GraphQLString,
         GraphQLSchema,
