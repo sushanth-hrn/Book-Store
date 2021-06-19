@@ -9,9 +9,9 @@ const { GraphQLObjectType,
 } = graphql;
 
 var books = [
-    { name: 'C++ for Beginners', genre: 'Programming', id: '1'},
-    { name: 'It all started with a friend request', genre: 'Love', id: '2'},
-    { name: 'Java Programming', genre: 'Programming', id: '3'}
+    { name: 'C++ for Beginners', genre: 'Programming', id: '1', authorId: '1'},
+    { name: 'It all started with a friend request', genre: 'Love', id: '2', authorId: '2'},
+    { name: 'Java Programming', genre: 'Programming', id: '3', authorId: '3'}
 ];
 
 var authors = [
@@ -25,7 +25,14 @@ const BookType = new GraphQLObjectType({
     fields: () => ({
         id: { type:GraphQLID },
         name: { type:GraphQLString },
-        genre: { type:GraphQLString } 
+        genre: { type:GraphQLString },
+        author: {
+            type: AuthorType,
+            resolve(parent,args){
+                console.log(parent);
+                return lash.find(authors, { id: parent.authorId});
+            }
+        } 
     })
 });
 
