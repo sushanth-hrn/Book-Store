@@ -12,20 +12,20 @@ const { GraphQLObjectType,
         GraphQLList
 } = graphql;
 
-var books = [
-    { name: 'C++ for Beginners', genre: 'Programming', id: '1', authorId: '1'},
-    { name: 'It all started with a friend request', genre: 'Love', id: '2', authorId: '2'},
-    { name: 'That\'s the way we met', genre: 'Love', id: '3',authorId: '2'},
-    { name: 'Few things left unsaid', genre: 'Love', id: '4', authorId: '2'},
-    { name: 'Java Programming', genre: 'Programming', id: '5', authorId: '3'},
-    { name: 'Data Structures and Algorithms', genre: 'Programming', id: '6', authorId: '3'}
-];
+// var books = [
+//     { name: 'C++ for Beginners', genre: 'Programming', id: '1', authorId: '1'},
+//     { name: 'It all started with a friend request', genre: 'Love', id: '2', authorId: '2'},
+//     { name: 'That\'s the way we met', genre: 'Love', id: '3',authorId: '2'},
+//     { name: 'Few things left unsaid', genre: 'Love', id: '4', authorId: '2'},
+//     { name: 'Java Programming', genre: 'Programming', id: '5', authorId: '3'},
+//     { name: 'Data Structures and Algorithms', genre: 'Programming', id: '6', authorId: '3'}
+// ];
 
-var authors = [
-    { name: 'Dennis Richie', age: 70, id:'1'},
-    { name: 'Sudeep Nagarkar', age: 45, id:'2'},
-    { name: 'James Gosling', age: 50, id:'3'}
-];
+// var authors = [
+//     { name: 'Dennis Richie', age: 70, id:'1'},
+//     { name: 'Sudeep Nagarkar', age: 45, id:'2'},
+//     { name: 'James Gosling', age: 50, id:'3'}
+// ];
 
 const BookType = new GraphQLObjectType({
     name: 'Book',
@@ -36,7 +36,7 @@ const BookType = new GraphQLObjectType({
         author: {
             type: AuthorType,
             resolve(parent,args){
-                return lash.find(authors, { id: parent.authorId});
+                //return lash.find(authors, { id: parent.authorId});
             }
         } 
     })
@@ -51,7 +51,7 @@ const AuthorType = new GraphQLObjectType({
         books: {
             type: new GraphQLList(BookType),
             resolve(parent,args){
-                return lash.filter(books, { authorId: parent.id});
+                //return lash.filter(books, { authorId: parent.id});
             }
         }
     })
@@ -69,7 +69,7 @@ const RootQuery = new GraphQLObjectType({
             },
             resolve(parent,args){
                 //code to get data from database/other sources
-                return lash.find(books, {id : args.id});
+                //return lash.find(books, {id : args.id});
             }
         },
         author: {
@@ -80,24 +80,49 @@ const RootQuery = new GraphQLObjectType({
                 }
             },
             resolve(parent,args){
-                return lash.find(authors, {id: args.id});
+                //return lash.find(authors, {id: args.id});
             }         
         },
         books: {
             type: new GraphQLList(BookType),
             resolve(parent,args){
-                return books;
+                //return books;
             }
         },
         authors: {
             type: new GraphQLList(AuthorType),
             resolve(parent,args){
-                return authors;
+                //return authors;
             }
         }
     }
 });
 
+const Mutation = new GraphQLObjectType({
+    name: 'Mutation',
+    fields: {
+        addAuthor: {
+            type: AuthorType,
+            args: {
+                name: {
+                    type: GraphQLString
+                },
+                age: {
+                    type: GraphQLInt
+                }
+            },
+            resolve(parent,args){
+                let author = new Author({
+                    name: args.name,
+                    age: args.age
+                });
+                return author.save();
+            }
+        }
+    }
+})
+
 module.exports = new GraphQLSchema({
-    query: RootQuery
+    query: RootQuery,
+    mutation: Mutation
 });
