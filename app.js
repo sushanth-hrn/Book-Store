@@ -1,22 +1,27 @@
 const express = require('express');
 const { graphqlHTTP } = require('express-graphql');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 const schema = require('./schema/schema');
 
+//connect to mlab database
 mongoose.connect("mongodb+srv://Sushanth:Sushanth9019854934@realmcluster.yrvyx.mongodb.net/books?retryWrites=true&w=majority");
-mongoose.connection.once('open',() => {
+mongoose.connection.once('open', () => {
     console.log("Connected to mlab");
 });
 
 const app = express();
 
-app.use('/graphql',graphqlHTTP({
+//allow cross-origin requests
+app.use(cors());
+
+app.use('/graphql', graphqlHTTP({
     schema: schema,
     graphiql: true
 }));
 
-app.listen(4000,() => {
+app.listen(4000, () => {
     console.log('Server listening at port 4000');
 });
 
